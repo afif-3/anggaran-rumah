@@ -91,6 +91,15 @@
       .reduce(function (a, t) { return a + t.amount; }, 0);
   }
 
+  // Money actually saved in a month: income minus everything except the
+  // planned transfer into savings. The "Savings" category is a transfer to
+  // a goal, not spending — counting it as spending would understate the
+  // savings rate and double-count the same rupiah.
+  function savingsFlow(month) {
+    var nonSavingsSpent = monthSpent(month) - catSpent(month, "savings");
+    return monthIncome(month) - nonSavingsSpent;
+  }
+
   function catSpent(month, catId) {
     return monthTx(month).filter(function (t) { return t.type === "expense" && t.category === catId; })
       .reduce(function (a, t) { return a + t.amount; }, 0);
@@ -119,12 +128,12 @@
     var income = monthIncome(currentMonth);
     var spent = monthSpent(currentMonth);
     var left = income - spent;
-    var rate = income > 0 ? Math.round(((income - spent) / income) * 100) : 0;
+    var saved = savingsFlow(currentMonth);
+    var rate = income > 0 ? Math.round((saved / income) * 100) : 0;
 
     $("stat-income").textContent = fmtRp(income);
     $("stat-spent").textContent = fmtRp(spent);
     $("stat-left").textContent = fmtRp(left);
-    $("stat-left").parentElement.classList.toggle("left", true);
     $("stat-rate").textContent = rate + "%";
     var rateNote = rate >= 20 ? "Excellent — above the 20% rule of thumb."
       : rate >= 10 ? "Good — on track. Aim for 20% if you can."
@@ -202,7 +211,6 @@
       return '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + d.color +
         '" stroke-width="' + stroke + '" stroke-dasharray="' + dash + '" stroke-dashoffset="' + dashoffset + '"/>';
     }).join("");
-    var start = -Math.PI / 2;
     // rotate so first slice starts at top
     return '<svg width="' + size + '" height="' + size + '" viewBox="0 0 ' + size + ' ' + size + '" role="img" aria-label="Spending by category chart">' +
       '<g transform="rotate(-90 ' + cx + ' ' + cy + ')">' + parts + '</g>' +
@@ -331,10 +339,21 @@
     }
 
     if (income > 0) {
-      var rate = Math.round(((income - spent) / income) * 100);
-      if (rate >= 20) items.push({ cls: "", mark: "✓", html: "Savings rate <b>" + rate + "%</b> — above the 20% rule of thumb. That pace funds the Emergency Fund in about <b>" + Math.max(1, Math.ceil((15000000 - 9200000) / Math.max(income - spent, 1))) + " months</b>." });
-      else if (rate >= 0) items.push({ cls: "warn", mark: "◐", html: "Savings rate is <b>" + rate + "%</b>. Moving <b>" + fmtRp(Math.round(income * 0.05)) + "</b> from Eating Out &amp; Entertainment would lift it to " + (rate + 5) + "%." });
-      else items.push({ cls: "bad", mark: "!", html: "You spent <b>" + fmtRp(spent - income) + "</b> more than you earned in " + esc(monthLabel(currentMonth)) + ". Pause non-essential spending until next payday." });
+      var saved = savingsFlow(currentMonth);
+      var rate = Math.round((saved / income) * 100);
+      if (rate >= 20) {
+        var emergency = null;
+        for (var gi = 0; gi < state.goals.length; gi++) {
+          if (state.goals[gi].id === "g-emergency") emergency = state.goals[gi];
+        }
+        var fundNote = "";
+        if (emergency && saved > 0) {
+          var monthsToFund = Math.max(1, Math.ceil((emergency.target - emergency.saved) / saved));
+          fundNote = " That pace funds the " + esc(emergency.name) + " in about <b>" + monthsToFund + " months</b>.";
+        }
+        items.push({ cls: "", mark: "✓", html: "Savings rate <b>" + rate + "%</b> — above the 20% rule of thumb, counting the planned transfer to savings." + fundNote });
+      } else if (rate >= 0) items.push({ cls: "warn", mark: "◐", html: "Savings rate is <b>" + rate + "%</b>. Moving <b>" + fmtRp(Math.round(income * 0.05)) + "</b> from Eating Out &amp; Entertainment would lift it to " + (rate + 5) + "%." });
+      else items.push({ cls: "bad", mark: "!", html: "You spent <b>" + fmtRp(-saved) + "</b> more than you earned in " + esc(monthLabel(currentMonth)) + ", even before the savings transfer. Pause non-essential spending until next payday." });
     }
 
     var prevIdx = months.indexOf(currentMonth) - 1;

@@ -22,7 +22,7 @@ This writes the static site to `out/`. Open `out/index.html` in any browser — 
 - `src/template.html` — the page skeleton (header, summary cards, budgets, charts, transactions, goals, data tools).
 - `src/styles.css` — the whole design system (warm, homey, responsive; system fonts only).
 - `src/app.js` — the client app: month navigation, budget bars, hand-rolled SVG donut + trend bars, transaction CRUD with search/filter, savings goals, localStorage persistence, JSON export/import.
-- `data/sample.json` — the seeded sample household: 11 categories with monthly budgets, income rows, 70 transactions across June–November 2026, and 4 savings goals.
+- `data/sample.json` — the seeded sample household: 11 categories with monthly budgets, income rows, 68 transactions across June–November 2026, and 4 savings goals.
 
 ## Data & privacy
 
