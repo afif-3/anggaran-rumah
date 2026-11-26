@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Anggaran Rumah — Household Budget Planner</title>
+<meta name="description" content="A simple, honest household budget planner for Indonesian families: track income and spending by category, watch your savings rate, and reach your savings goals. Your data stays in your browser.">
+<style>
+__STYLES__
+</style>
+</head>
+<body>
+<header class="topbar">
+  <div class="topbar-inner">
+    <a class="brand" href="#top">
+      <span class="brand-mark" aria-hidden="true">Rp</span>
+      <span><span class="brand-name">Anggaran Rumah</span><br><span class="brand-sub" id="household-name">Household Budget Planner</span></span>
+    </a>
+    <nav class="nav" aria-label="Sections">
+      <a href="#overview" class="active">Overview</a>
+      <a href="#budgets">Budgets</a>
+      <a href="#transactions">Transactions</a>
+      <a href="#goals">Savings Goals</a>
+      <a href="#data">Your Data</a>
+    </nav>
+  </div>
+</header>
+
+<main class="wrap" id="top">
+
+  <div class="page-head" id="overview">
+    <div>
+      <h1>Your money, at a glance</h1>
+      <p>Income, spending and savings for the month — planned in rupiah, kept private in your browser.</p>
+    </div>
+    <div class="month-nav" role="group" aria-label="Choose month">
+      <button class="btn-nav" id="btn-prev" aria-label="Previous month">‹</button>
+      <span class="month-label" id="month-label">November 2026</span>
+      <button class="btn-nav" id="btn-next" aria-label="Next month">›</button>
+    </div>
+  </div>
+
+  <section class="grid grid-3" aria-label="Monthly summary">
+    <div class="card stat income">
+      <div class="label">Income</div>
+      <div class="value" id="stat-income">Rp 0</div>
+      <div class="sub" id="stat-income-sub">—</div>
+    </div>
+    <div class="card stat spent">
+      <div class="label">Spent</div>
+      <div class="value" id="stat-spent">Rp 0</div>
+      <div class="sub" id="stat-spent-sub">—</div>
+    </div>
+    <div class="card stat left">
+      <div class="label">Left over</div>
+      <div class="value" id="stat-left">Rp 0</div>
+      <div class="sub"><span class="pill good" id="month-pill">Within budget</span>
+        &nbsp;·&nbsp; Savings rate <b id="stat-rate">0%</b> <span id="stat-rate-sub"></span></div>
+    </div>
+  </section>
+
+  <div class="grid grid-main" style="margin-top:16px">
+    <div class="grid" style="gap:16px">
+      <section class="card" id="budgets" aria-label="Category budgets">
+        <div class="card-head">
+          <div><h2>Category budgets</h2><p class="hint" id="budget-hint">How each category is tracking against its monthly limit.</p></div>
+          <span class="pill" id="budget-total">—</span>
+        </div>
+        <div id="budget-list"></div>
+      </section>
+
+      <section class="card" id="transactions" aria-label="Transactions">
+        <div class="card-head">
+          <div><h2>Transactions</h2><p class="hint">Every rupiah in and out this month. Add, edit or delete — it all saves automatically.</p></div>
+          <button class="btn" id="btn-add">+ Add transaction</button>
+        </div>
+        <div class="toolbar">
+          <input type="search" id="tx-search" placeholder="Search notes or categories…" aria-label="Search transactions">
+          <select id="tx-cat-filter" aria-label="Filter by category"></select>
+        </div>
+        <ul class="tx-list" id="tx-list"></ul>
+        <p class="hint" id="tx-count" style="margin:12px 0 0"></p>
+        <p style="margin:14px 0 0"><button class="btn secondary small" id="btn-add-2">+ Add another transaction</button></p>
+      </section>
+    </div>
+
+    <div class="grid" style="gap:16px">
+      <section class="card" aria-label="Spending by category">
+        <h2>Where the money went</h2>
+        <p class="hint">Spending by category, hand-drawn chart — no trackers, no libraries.</p>
+        <div class="chart-wrap">
+          <div id="donut" aria-hidden="true"></div>
+          <ul class="donut-legend" id="donut-legend"></ul>
+        </div>
+      </section>
+
+      <section class="card" aria-label="Six month trend">
+        <div class="card-head">
+          <div><h2>Six-month trend</h2><p class="hint">Income vs spending, month by month.</p></div>
+          <span class="legend-inline"><span><i class="sw" style="background:#86efac"></i>Income</span><span><i class="sw" style="background:var(--accent)"></i>Spent</span></span>
+        </div>
+        <div class="trend" id="trend"></div>
+      </section>
+
+      <section class="card" id="goals" aria-label="Savings goals">
+        <div class="card-head">
+          <div><h2>Savings goals</h2><p class="hint">What the family is saving towards.</p></div>
+          <span class="pill" id="goals-total">—</span>
+        </div>
+        <div id="goal-list"></div>
+      </section>
+
+      <section class="card" aria-label="Insights">
+        <h2>This month, in plain words</h2>
+        <p class="hint">Automatic notes from your numbers — no judgement, just facts.</p>
+        <div id="insights"></div>
+      </section>
+    </div>
+  </div>
+
+  <section class="card" id="data" style="margin-top:16px" aria-label="Your data">
+    <h2>Your data stays yours</h2>
+    <p class="hint">Everything you enter is stored only in this browser (localStorage). There is no account, no server and no tracking. Back up a copy any time, restore it later, or start fresh with the sample household.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap">
+      <button class="btn secondary" id="btn-export">⬇ Export backup (JSON)</button>
+      <button class="btn secondary" id="btn-import">⬆ Import backup</button>
+      <button class="btn danger-outline" id="btn-reset">Reset to sample data</button>
+      <input type="file" id="file-import" accept="application/json,.json" class="sr-only" aria-label="Choose a backup file to import">
+    </div>
+    <p class="hint" style="margin:14px 0 0">Sample data: a family of four in Jakarta, June–November 2026, with realistic income, rent, groceries, school fees and savings goals. Edit or delete any of it — it is yours to play with.</p>
+  </section>
+
+  <footer class="footer">
+    <p>Anggaran Rumah — a household budget planner that runs entirely in your browser. Built by an AI agent for make.fun's “Make the best household budget site” bounty. Entered on <a href="https://make.fun/bounty/best-household-budget-site-20261126-1457">make.fun</a>.</p>
+  </footer>
+</main>
+
+<dialog id="tx-modal" aria-labelledby="modal-title">
+  <form class="modal-body" id="tx-form" method="dialog">
+    <h2 id="modal-title">Add transaction</h2>
+    <p class="hint">Money in or out — one entry, saved instantly.</p>
+    <div class="field" style="margin-bottom:12px">
+      <span class="segmented" role="group" aria-label="Transaction type">
+        <button type="button" id="type-expense" class="on">Expense</button>
+        <button type="button" id="type-income">Income</button>
+      </span>
+    </div>
+    <div class="form-grid">
+      <div class="field">
+        <label for="f-amount">Amount (Rp)</label>
+        <input id="f-amount" type="number" min="1" step="100" inputmode="numeric" placeholder="e.g. 450000" required>
+      </div>
+      <div class="field">
+        <label for="f-date">Date</label>
+        <input id="f-date" type="date" required>
+      </div>
+      <div class="field">
+        <label for="f-category">Category</label>
+        <select id="f-category"></select>
+      </div>
+      <div class="field">
+        <label for="f-note">Note</label>
+        <input id="f-note" type="text" maxlength="120" placeholder="e.g. Weekly market — Pasar Minggu">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button type="button" class="btn secondary" id="modal-cancel">Cancel</button>
+      <button type="submit" class="btn">Save transaction</button>
+    </div>
+  </form>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+__APP_JS__
+</script>
+</body>
+</html>
