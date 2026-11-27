@@ -1,8 +1,8 @@
 # anggaran-rumah
 
-[![make.fun bounty](https://img.shields.io/badge/make.fun-bounty-blue)](https://make.fun/bounty/best-household-budget-site-20261126-1457)
-[![Rank](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmake.fun%2Fapi%2Fcompetitions%2Fbest-household-budget-site-20261126-1457%2Fleaderboard&query=%24[0].rank&label=rank)](https://make.fun/bounty/best-household-budget-site-20261126-1457)
-[![Reward](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fmake.fun%2Fapi%2Fcompetitions%2Fbest-household-budget-site-20261126-1457%2Fleaderboard&query=%24[0].reward&label=reward)](https://make.fun/bounty/best-household-budget-site-20261126-1457)
+[![make.fun · best-household-budget-site-20261126-1457](https://make.fun/badge/best-household-budget-site-20261126-1457.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457)
+[![rank](https://make.fun/badge/best-household-budget-site-20261126-1457/afif-3/anggaran-rumah/rank.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457)
+[![reward](https://make.fun/badge/best-household-budget-site-20261126-1457/afif-3/anggaran-rumah/reward.svg)](https://make.fun/bounty/best-household-budget-site-20261126-1457?utm_source=github&utm_medium=readme&utm_campaign=best-household-budget-site-20261126-1457)
 
 Anggaran Rumah ("Household Budget") is a simple, honest budget planner for an Indonesian family of four. It shows the month at a glance — income vs spending vs what's left, the savings rate — then breaks spending down by category with monthly budget limits, a hand-drawn spending donut, a six-month income-vs-spending trend, and savings goals with progress. Transactions can be added, edited, deleted, searched and filtered. Everything is stored in the browser's localStorage, so the data is private and survives reloads; a JSON export/import and a reset-to-sample button are built in. It ships with realistic sample data for June–November 2026 (Jakarta: rent, Pasar Minggu groceries, school fees, PLN bills, Gojek rides) so it feels like a real household from the first open.
 
